@@ -53,8 +53,14 @@ class PacienteServicio(QMainWindow):
         elif apellido == "":
             QMessageBox.warning(self, "Advertencia", "Debe ingresar el apellido")
             return
+        elif not cedula:
+            QMessageBox.warning(self, "Advertencia", "Debe ingresar una cédula")
+            return
         elif len(cedula) != 10 or not cedula.isdigit():
-            QMessageBox.warning(self, "Advertencia", "Debe ingresar una cédula válida de 10 dígitos")
+            QMessageBox.warning(self, "Advertencia", "La cédula debe ser de 10 dígitos.")
+            return
+        elif not edad:
+            QMessageBox.warning(self, "Advertencia", "Debe ingresar una edad")
             return
         elif not edad.isdigit() or int(edad) <= 0:
             QMessageBox.warning(self, "Advertencia", "Edad inválida")
@@ -80,6 +86,9 @@ class PacienteServicio(QMainWindow):
             return
 
         try:
+            if not totalpagar:
+                QMessageBox.warning(self, "Advertencia", "Tiene que ingresar el precio antes de registrar el paciente..")
+                return
             totalpagar = float(totalpagar)
         except:
             QMessageBox.warning(self, "Advertencia", "Total a pagar inválido")
@@ -107,7 +116,8 @@ class PacienteServicio(QMainWindow):
             print(f"Total a pagar: {totalpagar}")
             print("-" * 40)
 
-            self.ui.statusbar.showMessage("Paciente guardado correctamente", 3000)
+
+            QMessageBox.information(self, "Éxito", "Paciente guardado con éxito")
             self.limpiar()
         else:
             QMessageBox.critical(self, "Error", resultado["mensaje"])
@@ -158,7 +168,7 @@ class PacienteServicio(QMainWindow):
 
         if resultado["ejecuto"]:
             print("PACIENTE ACTUALIZADO:", cedula)
-            self.ui.statusbar.showMessage("Paciente actualizado correctamente", 3000)
+            QMessageBox.information(self, "Actualización", "Paciente actualizado correctamente")
             self.limpiar()
         else:
             QMessageBox.critical(self, "Error", resultado["mensaje"])
@@ -173,6 +183,7 @@ class PacienteServicio(QMainWindow):
 
         if QMessageBox.question(self, "Confirmar", "¿Desea eliminar este paciente?") == QMessageBox.Yes:
             resultado = PacienteDAO.eliminar_paciente(cedula)
+            QMessageBox.information(self, "Eliminación", "Paciente eliminado correctamente")
             if resultado["ejecuto"]:
                 print("PACIENTE ELIMINADO:", cedula)
                 self.limpiar()
@@ -215,4 +226,4 @@ class PacienteServicio(QMainWindow):
         self.ui.txtFecha.clear()
         self.ui.txtHora.clear()
         self.ui.txtTotalPagar.clear()
-        self.ui.statusbar.showMessage("Formulario limpiado", 3000)
+        QMessageBox.information(self, "Limpieza", "Campos limpiados correctamente")
