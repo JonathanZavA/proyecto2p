@@ -9,18 +9,18 @@ class Paciente:
     """
     Clase que crea objetos para los datos de un paciente
     """
-    def __init__(self,nombre=str, apellido=str, cedula=str, edad=int, sexo=str,
+    def __init__(self,nombre=str, apellido=str, cedula=str, edad=str, sexo=str,
                  especialidad=str, tipo_urgencia=str, fecha=None, hora=None, totalpagar=0.0):
-        self._nombre = nombre
-        self._apellido = apellido
-        self._cedula = cedula
-        self._edad = edad
-        self._sexo = sexo
-        self._especialidad = especialidad
-        self._tipo_urgencia = tipo_urgencia
-        self._fecha = fecha
-        self._hora = hora
-        self._totalpagar = totalpagar
+        self.nombre = nombre
+        self.apellido = apellido
+        self.cedula = cedula
+        self.edad = edad
+        self.sexo = sexo
+        self.especialidad = especialidad
+        self.tipo_urgencia = tipo_urgencia
+        self.fecha = fecha
+        self.hora = hora
+        self.totalpagar = totalpagar
 
     @property
     def nombre(self):
@@ -53,14 +53,19 @@ class Paciente:
 
         self._apellido = n_apellido
 
-    #propiedades para cedula
     @property
     def cedula(self):
         return self._cedula
 
     @cedula.setter
-    def cedula(self, nuevo_cedula):
-        self._cedula = nuevo_cedula
+    def cedula(self,n_cedula):
+        if not n_cedula:
+            raise ValueError('Debe ingresar una cédula.')
+        elif not n_cedula.isdigit():
+            raise ValueError('\nsolo se permiten números en la cédula.\n(Recuerde que el tamaño debe de ser de 10 dígitos correspondientes al formato de una cédula, si no es así, saltará otro error.')
+        elif len(n_cedula) != 10:
+            raise ValueError('Cédula fuera del rango (son 10 digitos)')
+        self._cedula = n_cedula
 
     @property
     def edad(self):
@@ -73,7 +78,7 @@ class Paciente:
         if str_edad.isdigit():
             n_edad = int(str_edad)
             if 0 <= n_edad <= 123:
-                self._edad = n_edad
+                self._edad = str(n_edad)
             else:
                 raise ValueError('La edad no está dentro del rango permitido.')
         else:

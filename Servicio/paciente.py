@@ -62,9 +62,6 @@ class PacienteServicio(QMainWindow):
         elif not edad:
             QMessageBox.warning(self, "Advertencia", "Debe ingresar una edad")
             return
-        elif not edad.isdigit() or int(edad) <= 0:
-            QMessageBox.warning(self, "Advertencia", "Edad inválida")
-            return
         elif sexo == "SELECCIONAR":
             QMessageBox.warning(self, "Advertencia", "Seleccione sexo")
             return
@@ -93,34 +90,37 @@ class PacienteServicio(QMainWindow):
         except:
             QMessageBox.warning(self, "Advertencia", "Total a pagar inválido")
             return
+        try:
+            paciente = Paciente(
+                nombre=nombre,
+                apellido=apellido,
+                cedula=cedula,
+                edad=edad,
+                sexo=sexo,
+                especialidad=especialidad,
+                tipo_urgencia=tipourgencia,
+                fecha=fecha,
+                hora=hora,
+                totalpagar=totalpagar
+            )
 
-        paciente = Paciente(
-            nombre=nombre,
-            apellido=apellido,
-            cedula=cedula,
-            edad=edad,
-            sexo=sexo,
-            especialidad=especialidad,
-            tipo_urgencia=tipourgencia,
-            fecha=fecha,
-            hora=hora,
-            totalpagar=totalpagar
-        )
+            resultado = PacienteDAO.insertar_paciente(paciente)
 
-        resultado = PacienteDAO.insertar_paciente(paciente)
-
-        if resultado["ejecuto"]:
-            print("PACIENTE GUARDADO")
-            print(f"{cedula} | {nombre} {apellido} | {edad} | {sexo}")
-            print(f"{especialidad} | {tipourgencia} | {fecha} {hora}")
-            print(f"Total a pagar: {totalpagar}")
-            print("-" * 40)
+            if resultado["ejecuto"]:
+                print("PACIENTE GUARDADO")
+                print(f"{cedula} | {nombre} {apellido} | {edad} | {sexo}")
+                print(f"{especialidad} | {tipourgencia} | {fecha} {hora}")
+                print(f"Total a pagar: {totalpagar}")
+                print("-" * 40)
 
 
-            QMessageBox.information(self, "Éxito", "Paciente guardado con éxito")
-            self.limpiar()
-        else:
-            QMessageBox.critical(self, "Error", resultado["mensaje"])
+                QMessageBox.information(self, "Éxito", "Paciente guardado con éxito")
+                self.limpiar()
+            else:
+                QMessageBox.critical(self, "Error", resultado["mensaje"])
+
+        except ValueError as e:
+            QMessageBox.warning(self, "Advertencia", f'Error: {e}')
 
     #funcion para actualiza los datos del paciente
     def actualizar(self):
@@ -140,7 +140,7 @@ class PacienteServicio(QMainWindow):
         hora = self.ui.txtHora.text().strip()
         totalpagar = self.ui.txtTotalPagar.text().strip()
 
-        if nombre == "" or apellido == "":
+        if nombre == "":
             QMessageBox.warning(self, "Advertencia", "Nombre y apellido obligatorios")
             return
 
@@ -151,27 +151,31 @@ class PacienteServicio(QMainWindow):
             QMessageBox.warning(self, "Advertencia", "Datos inválidos")
             return
 
-        paciente = Paciente(
-            nombre=nombre,
-            apellido=apellido,
-            cedula=cedula,
-            edad=edad,
-            sexo=sexo,
-            especialidad=especialidad,
-            tipo_urgencia=tipourgencia,
-            fecha=fecha,
-            hora=hora,
-            totalpagar=totalpagar
-        )
+        try:
+            paciente = Paciente(
+                nombre=nombre,
+                apellido=apellido,
+                cedula=cedula,
+                edad=edad,
+                sexo=sexo,
+                especialidad=especialidad,
+                tipo_urgencia=tipourgencia,
+                fecha=fecha,
+                hora=hora,
+                totalpagar=totalpagar
+            )
 
-        resultado = PacienteDAO.actualizar_paciente(paciente)
+            resultado = PacienteDAO.actualizar_paciente(paciente)
 
-        if resultado["ejecuto"]:
-            print("PACIENTE ACTUALIZADO:", cedula)
-            QMessageBox.information(self, "Actualización", "Paciente actualizado correctamente")
-            self.limpiar()
-        else:
-            QMessageBox.critical(self, "Error", resultado["mensaje"])
+            if resultado["ejecuto"]:
+                print("PACIENTE ACTUALIZADO:", cedula)
+                QMessageBox.information(self, "Actualización", "Paciente actualizado correctamente")
+                self.limpiar()
+            else:
+                QMessageBox.critical(self, "Error", resultado["mensaje"])
+
+        except ValueError as e:
+            QMessageBox.warning(self, "Advertencia", f'Error: {e}')
 
     # funcion para elimina al paciente
     def eliminar(self):
