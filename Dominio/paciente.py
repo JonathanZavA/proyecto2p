@@ -9,7 +9,7 @@ class Paciente:
     """
     Clase que crea objetos para los datos de un paciente
     """
-    def __init__(self, cedula=str, nombre=str, apellido=str, edad=int, sexo=str,
+    def __init__(self,nombre=str, apellido=str, cedula=str, edad=int, sexo=str,
                  especialidad=str, tipo_urgencia=str, fecha=None, hora=None, totalpagar=0.0):
         self._nombre = nombre
         self._apellido = apellido
@@ -22,23 +22,36 @@ class Paciente:
         self._hora = hora
         self._totalpagar = totalpagar
 
-    #propiedades para nombre
     @property
     def nombre(self):
         return self._nombre
 
     @nombre.setter
-    def nombre(self, nuevo_nombre):
-        self._nombre = nuevo_nombre
+    def nombre(self, n_nombre):
+        """Valida que el nombre no tenga números ni caracteres especiales."""
+        n_nombre = ' '.join(str(n_nombre).split())
+        if not n_nombre:
+            raise ValueError('El nombre no puede estar vacío')
 
-    #propiedades para apellido
+        if not n_nombre.replace(' ','').isalpha():
+            raise ValueError('el nombre tiene caracteres inválidos. Es posible que usted haya ingresado números o caracteres especiales en su nombre.')
+
+        self._nombre = n_nombre
+
     @property
     def apellido(self):
         return self._apellido
 
     @apellido.setter
-    def apellido(self, nuevo_apellido):
-        self._apellido = nuevo_apellido
+    def apellido(self, n_apellido):
+        """Valida que el apellido no tenga números ni caracteres especiales."""
+        n_apellido = ' '.join(str(n_apellido).split())
+        if not n_apellido:
+            raise ValueError('El apellido no puede estar vacío.')
+        if not n_apellido.replace(' ','').isalpha():
+            raise ValueError('el apellido tiene caracteres inválidos. Es posible que usted haya ingresado números o caracteres especiales en su apellido.')
+
+        self._apellido = n_apellido
 
     #propiedades para cedula
     @property
@@ -49,14 +62,22 @@ class Paciente:
     def cedula(self, nuevo_cedula):
         self._cedula = nuevo_cedula
 
-    #propiedades para edad
     @property
     def edad(self):
         return self._edad
 
     @edad.setter
-    def edad(self, nuevo_edad):
-        self._edad = nuevo_edad
+    def edad(self, n_edad):
+        """Valida que la edad sea un entero positivo entre 0 y 123."""
+        str_edad = str(n_edad).replace(' ','')
+        if str_edad.isdigit():
+            n_edad = int(str_edad)
+            if 0 <= n_edad <= 123:
+                self._edad = n_edad
+            else:
+                raise ValueError('La edad no está dentro del rango permitido.')
+        else:
+            raise ValueError('la edad no cumple con el formato correcto.')
 
     #propiedades para sexo
     @property

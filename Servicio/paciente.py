@@ -145,7 +145,7 @@ class PacienteServicio(QMainWindow):
             nombre=nombre,
             apellido=apellido,
             cedula=cedula,
-            edad=int(edad),
+            edad=edad,
             sexo=sexo,
             especialidad=especialidad,
             tipo_urgencia=tipourgencia,
